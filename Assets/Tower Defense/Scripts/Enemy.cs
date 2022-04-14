@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -16,7 +17,14 @@ public class Enemy : MonoBehaviour
   private float healthPerUnit;
 
   public Transform healthBar;
+  
+  private AudioSource _audioSource;
+  public AudioClip dieSound; 
 
+  void Awake()
+  {
+    _audioSource = GetComponent<AudioSource>();
+  }
   void Start()
   {
     healthPerUnit = 100f / health;
@@ -62,14 +70,20 @@ public class Enemy : MonoBehaviour
     if (health <= 0)
     {
       
-      
       Debug.Log($"{transform.name} is Dead");
       Destroy(this.gameObject);
+      ActivateSound(dieSound);
     }
 
     float percentage = healthPerUnit * health;
     Vector3 newHealthAmount = new Vector3(percentage/100f , healthBar.localScale.y, healthBar.localScale.z);
     healthBar.localScale = newHealthAmount;
+  }
+  
+  private void ActivateSound(AudioClip dieSound)
+  {
+    _audioSource.clip = dieSound;
+    _audioSource.Play();
   }
 
 }
